@@ -1,0 +1,211 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-display: "Archivo Black", sans-serif;
+}
+
+:root {
+  /* Neo-Brutalism Palette */
+  --background: #FFFAF0; /* Floral White */
+  --foreground: #2D3436; /* Dracula Orchid - Almost Black */
+  
+  --primary: #FF6B6B; /* Pastel Red */
+  --primary-foreground: #2D3436;
+  
+  --secondary: #4ECDC4; /* Medium Turquoise */
+  --secondary-foreground: #2D3436;
+  
+  --muted: #FFE66D; /* Maize Crayola */
+  --muted-foreground: #2D3436;
+  
+  --accent: #FFE66D;
+  --accent-foreground: #2D3436;
+  
+  --destructive: #FF0055;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #2D3436; /* Thick black borders */
+  --input: #FFFFFF;
+  --ring: #2D3436;
+  
+  --card: #FFFFFF;
+  --card-foreground: #2D3436;
+  
+  --popover: #FFFFFF;
+  --popover-foreground: #2D3436;
+  
+  --radius: 0px; /* No rounded corners for brutalism */
+  
+  --sidebar: #FFFAF0;
+  --sidebar-foreground: #2D3436;
+  --sidebar-primary: #FF6B6B;
+  --sidebar-primary-foreground: #2D3436;
+  --sidebar-accent: #FFE66D;
+  --sidebar-accent-foreground: #2D3436;
+  --sidebar-border: #2D3436;
+  --sidebar-ring: #2D3436;
+}
+
+.dark {
+  /* Dark mode adaptation - keeping high contrast */
+  --background: #2D3436;
+  --foreground: #FFFAF0;
+  
+  --primary: #FF6B6B;
+  --primary-foreground: #2D3436;
+  
+  --secondary: #4ECDC4;
+  --secondary-foreground: #2D3436;
+  
+  --muted: #FFE66D;
+  --muted-foreground: #2D3436;
+  
+  --accent: #FFE66D;
+  --accent-foreground: #2D3436;
+  
+  --destructive: #FF0055;
+  --destructive-foreground: #FFFFFF;
+  
+  --border: #FFFAF0;
+  --input: #2D3436;
+  --ring: #FFFAF0;
+  
+  --card: #2D3436;
+  --card-foreground: #FFFAF0;
+  
+  --popover: #2D3436;
+  --popover-foreground: #FFFAF0;
+  
+  --sidebar: #2D3436;
+  --sidebar-foreground: #FFFAF0;
+  --sidebar-primary: #FF6B6B;
+  --sidebar-primary-foreground: #2D3436;
+  --sidebar-accent: #FFE66D;
+  --sidebar-accent-foreground: #2D3436;
+  --sidebar-border: #FFFAF0;
+  --sidebar-ring: #FFFAF0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@utility container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  
+  @media (min-width: 640px) {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 1280px;
+  }
+}
+
+@layer utilities {
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+}
+
+/* Neo-Brutalism Custom Components */
+@utility neo-box {
+  @apply border-2 border-border shadow-[4px_4px_0px_0px_var(--color-border)] transition-all duration-150;
+}
+
+@utility neo-box-active {
+  @apply translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_var(--color-border)];
+}
+
+@utility neo-button {
+  @apply border-2 border-border shadow-[4px_4px_0px_0px_var(--color-border)] transition-all duration-150 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold py-2 px-4 uppercase tracking-wider;
+}
+
+@utility neo-card {
+  @apply border-2 border-border bg-card shadow-[8px_8px_0px_0px_var(--color-border)];
+}
+
+@utility neo-input {
+  @apply border-2 border-border bg-input p-2 font-mono focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+/* Bingo Check Alert Animation */
+@keyframes pulse-yellow {
+  0%, 100% {
+    box-shadow: 12px 12px 0px 0px rgba(0,0,0,1);
+    border-color: #000000;
+  }
+  50% {
+    box-shadow: 12px 12px 0px 0px rgba(0,0,0,1), 0 0 30px 10px rgba(255, 230, 109, 0.8);
+    border-color: #FFE66D;
+  }
+}

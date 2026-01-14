@@ -1,0 +1,73 @@
+import express from "express";
+import { createServer } from "http";
+import path from "path";
+import { fileURLToPath } from "url";
+import { Server } from "socket.io";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function startServer() {
+  const app = express();
+  const server = createServer(app);
+  const io = new Server(server);
+
+  // 遊戲狀態
+  let clickedNumbers = new Set<number>();
+
+  // Socket.IO 邏輯
+  io.on('connection', (socket) => {
+    console.log('A user connected');
+    
+    // 發送當前狀態給新連線的用戶
+    socket.emit('initial-state', Array.from(clickedNumbers));
+
+    // 監聽號碼點擊事件
+    socket.on('number-clicked', (number: number) => {
+      if (!clickedNumbers.has(number)) {
+        console.log(`Number ${number} clicked`);
+        clickedNumbers.add(number);
+        // 廣播給所有連線用戶
+        io.emit('update-number', number);
+      }
+    });
+
+    // 監聽重置遊戲事件
+    socket.on('reset-game', () => {
+      console.log('Game reset');
+      clickedNumbers.clear();
+      io.emit('reset-game');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('User disconnected');
+    });
+  });
+
+  // Serve static files from dist/public in production
+  const staticPath =
+    process.env.NODE_ENV === "production"
+      ? path.resolve(__dirname, "public")
+      : path.resolve(__dirname, "..", "dist", "public");
+
+  // 在開發環境中，Vite 會處理靜態文件，這裡主要是為了生產環境
+  // 但為了確保 socket.io 正常工作，我們需要確保 express 也能處理請求
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static(staticPath));
+    
+    // Handle client-side routing - serve index.html for all routes
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(staticPath, "index.html"));
+    });
+  }
+
+  // 在開發環境中，後端運行在 3001 端口，Vite 運行在 3000 端口並代理請求
+  // 在生產環境中，後端運行在 PORT 環境變量指定的端口（通常是 3000）
+  const port = process.env.NODE_ENV === "production" ? (process.env.PORT || 3000) : 3001;
+
+  server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}/`);
+  });
+}
+
+startServer().catch(console.error);
