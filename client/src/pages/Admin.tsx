@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Admin() {
-  const { clickedNumbers, history, emitNumberClick, emitRemindCheck, isConnected, onlineUsers, selectedCount, socket } = useSocket();
+  const { clickedNumbers, history, emitNumberClick, emitRemindCheck, isConnected, onlineUsers, selectedCount, playerStats, socket } = useSocket();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const handleNumberClick = (number: number) => {
@@ -66,6 +66,32 @@ export default function Admin() {
         >
           🔔 提醒聽牌
         </Button>
+      </div>
+
+      {/* 現場戰況區塊 */}
+      <div className="w-full max-w-6xl mb-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]">
+        <h2 className="font-display text-xl mb-3 uppercase flex items-center gap-2">
+          <span>📊</span>
+          <span>現場戰況</span>
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
+            <div className="font-mono text-sm text-white/80">聽牌 (差1個)</div>
+            <div className="font-display text-3xl font-bold text-yellow-300">{playerStats['差1個']} 人</div>
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
+            <div className="font-mono text-sm text-white/80">差 5 個</div>
+            <div className="font-display text-3xl font-bold text-blue-300">{playerStats['差5個']} 人</div>
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
+            <div className="font-mono text-sm text-white/80">差 10 個</div>
+            <div className="font-display text-3xl font-bold text-green-300">{playerStats['差10個']} 人</div>
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
+            <div className="font-mono text-sm text-white/80">差 15 個</div>
+            <div className="font-display text-3xl font-bold text-purple-300">{playerStats['差15個']} 人</div>
+          </div>
+        </div>
       </div>
 
       <header className="w-full max-w-4xl mb-8 flex flex-col md:flex-row justify-between items-center gap-4">

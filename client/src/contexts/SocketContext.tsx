@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+interface PlayerStats {
+  '差1個': number;
+  '差5個': number;
+  '差10個': number;
+  '差15個': number;
+}
+
 interface SocketContextType {
   socket: Socket | null;
   clickedNumbers: Set<number>;
@@ -9,8 +16,10 @@ interface SocketContextType {
   onlineUsers: number;
   selectedCount: number;
   showReminder: boolean; // 是否顯示提醒
+  playerStats: PlayerStats; // 玩家狀態統計
   emitNumberClick: (number: number) => void;
   emitRemindCheck: () => void; // 提醒聽牌
+  emitReportState: (status: string | null) => void; // 回報狀態
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -23,6 +32,12 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [onlineUsers, setOnlineUsers] = useState(0);
   const [selectedCount, setSelectedCount] = useState(0);
   const [showReminder, setShowReminder] = useState(false); // 提醒狀態
+  const [playerStats, setPlayerStats] = useState<PlayerStats>({
+    '差1個': 0,
+    '差5個': 0,
+    '差10個': 0,
+    '差15個': 0
+  });
 
   useEffect(() => {
     // Socket.IO 客戶端配置
@@ -99,6 +114,12 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       }, 3000);
     });
 
+    // 監聽玩家狀態統計更新
+    newSocket.on('update-stats', (stats: PlayerStats) => {
+      console.log('[Socket.IO] Player stats updated:', stats);
+      setPlayerStats(stats);
+    });
+
     setSocket(newSocket);
 
     return () => {
@@ -118,8 +139,14 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const emitReportState = (status: string | null) => {
+    if (socket) {
+      socket.emit('report-state', status);
+    }
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, emitNumberClick, emitRemindCheck }}>
+    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState }}>
       {children}
     </SocketContext.Provider>
   );
