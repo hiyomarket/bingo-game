@@ -87,8 +87,8 @@ export default function Admin() {
         </div>
 
         {/* 中間：歷史列表 */}
-        <div className="flex-1 overflow-x-auto">
-          <div className="flex gap-2 items-center min-w-max">
+        <div className="flex-1 overflow-x-auto max-w-full">
+          <div className="flex gap-2 items-center min-w-max whitespace-nowrap">
             <span className="font-mono text-sm font-bold text-gray-400">📜</span>
             {history.length === 0 ? (
               <span className="font-mono text-sm text-gray-500">尚無開獎記錄</span>
@@ -129,16 +129,16 @@ export default function Admin() {
             <div className="font-display text-3xl font-bold text-yellow-300">{playerStats['差1個']} 人</div>
           </div>
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
-            <div className="font-mono text-sm text-white/80">差 5 個</div>
-            <div className="font-display text-3xl font-bold text-blue-300">{playerStats['差5個']} 人</div>
+            <div className="font-mono text-sm text-white/80">差 3 個號碼</div>
+            <div className="font-display text-3xl font-bold text-blue-300">{playerStats['差3個']} 人</div>
           </div>
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
-            <div className="font-mono text-sm text-white/80">差 10 個</div>
-            <div className="font-display text-3xl font-bold text-green-300">{playerStats['差10個']} 人</div>
+            <div className="font-mono text-sm text-white/80">差 5 個號碼</div>
+            <div className="font-display text-3xl font-bold text-green-300">{playerStats['差5個']} 人</div>
           </div>
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
-            <div className="font-mono text-sm text-white/80">差 15 個</div>
-            <div className="font-display text-3xl font-bold text-purple-300">{playerStats['差15個']} 人</div>
+            <div className="font-mono text-sm text-white/80">差 8 個號碼</div>
+            <div className="font-display text-3xl font-bold text-purple-300">{playerStats['差8個']} 人</div>
           </div>
         </div>
       </div>

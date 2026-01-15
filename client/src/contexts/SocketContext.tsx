@@ -3,9 +3,9 @@ import { io, Socket } from 'socket.io-client';
 
 interface PlayerStats {
   '差1個': number;
+  '差3個': number;
   '差5個': number;
-  '差10個': number;
-  '差15個': number;
+  '差8個': number;
 }
 
 interface SocketContextType {
@@ -35,9 +35,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [showReminder, setShowReminder] = useState(false); // 提醒狀態
   const [playerStats, setPlayerStats] = useState<PlayerStats>({
     '差1個': 0,
+    '差3個': 0,
     '差5個': 0,
-    '差10個': 0,
-    '差15個': 0
+    '差8個': 0
   });
 
   useEffect(() => {

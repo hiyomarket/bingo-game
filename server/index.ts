@@ -30,9 +30,9 @@ async function startServer() {
   function calculateStats() {
     const stats = {
       '差1個': 0,
+      '差3個': 0,
       '差5個': 0,
-      '差10個': 0,
-      '差15個': 0
+      '差8個': 0
     };
     
     playerStates.forEach((status) => {

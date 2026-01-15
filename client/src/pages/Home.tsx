@@ -99,42 +99,42 @@ export default function Home() {
               </button>
               <button
                 onClick={() => {
+                  setSelectedStatus('差3個');
+                  emitReportState('差3個');
+                }}
+                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
+                  selectedStatus === '差3個'
+                    ? 'bg-blue-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
+                    : 'bg-white text-black hover:bg-blue-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
+                }`}
+              >
+                📊 我差 3 個
+              </button>
+              <button
+                onClick={() => {
                   setSelectedStatus('差5個');
                   emitReportState('差5個');
                 }}
                 className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
                   selectedStatus === '差5個'
-                    ? 'bg-blue-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
-                    : 'bg-white text-black hover:bg-blue-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                📊 我差 5 個
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedStatus('差10個');
-                  emitReportState('差10個');
-                }}
-                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差10個'
                     ? 'bg-green-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
                     : 'bg-white text-black hover:bg-green-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                 }`}
               >
-                📈 我差 10 個
+                📈 我差 5 個
               </button>
               <button
                 onClick={() => {
-                  setSelectedStatus('差15個');
-                  emitReportState('差15個');
+                  setSelectedStatus('差8個');
+                  emitReportState('差8個');
                 }}
                 className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差15個'
+                  selectedStatus === '差8個'
                     ? 'bg-purple-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
                     : 'bg-white text-black hover:bg-purple-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                 }`}
               >
-                📉 我差 15 個
+                📉 我差 8 個
               </button>
               <button
                 onClick={() => {
