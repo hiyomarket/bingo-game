@@ -20,6 +20,7 @@ interface SocketContextType {
   emitNumberClick: (number: number) => void;
   emitRemindCheck: () => void; // 提醒聽牌
   emitReportState: (status: string | null) => void; // 回報狀態
+  emitUndoNumber: (number: number) => void; // 取消號碼
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -145,8 +146,14 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const emitUndoNumber = (number: number) => {
+    if (socket) {
+      socket.emit('undo-number', number);
+    }
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState }}>
+    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState, emitUndoNumber }}>
       {children}
     </SocketContext.Provider>
   );

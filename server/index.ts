@@ -122,6 +122,26 @@ async function startServer() {
       broadcastPlayerStats();
     });
 
+    // 監聽取消號碼事件
+    socket.on('undo-number', (number: number) => {
+      if (clickedNumbers.has(number)) {
+        console.log(`[Socket.IO] Number ${number} undone by admin`);
+        // 從 clickedNumbers 移除
+        clickedNumbers.delete(number);
+        // 從 history 移除（移除所有出現）
+        history = history.filter(h => h !== number.toString());
+        // 廣播給所有連線用戶
+        io.emit('update-state', {
+          clickedNumbers: Array.from(clickedNumbers),
+          history: history,
+          latestNumber: null // 取消不需要 latestNumber
+        });
+        // 更新統計資訊
+        broadcastStats();
+        broadcastPlayerStats();
+      }
+    });
+
     socket.on('disconnect', () => {
       onlineUsers--;
       console.log(`[Socket.IO] User disconnected. Total online: ${onlineUsers}`);

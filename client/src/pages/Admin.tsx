@@ -5,8 +5,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Admin() {
-  const { clickedNumbers, history, emitNumberClick, emitRemindCheck, isConnected, onlineUsers, selectedCount, playerStats, socket } = useSocket();
+  const { clickedNumbers, history, emitNumberClick, emitRemindCheck, isConnected, onlineUsers, selectedCount, playerStats, socket, emitUndoNumber } = useSocket();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [undoNumber, setUndoNumber] = useState<number | null>(null);
 
   const handleNumberClick = (number: number) => {
     if (clickedNumbers.has(number)) {
@@ -25,8 +26,56 @@ export default function Admin() {
     }
   };
 
+  const handleNumberDoubleClick = (number: number) => {
+    setUndoNumber(number);
+  };
+
+  const handleConfirmUndo = () => {
+    if (undoNumber !== null) {
+      emitUndoNumber(undoNumber);
+      toast.success(`Number ${undoNumber} has been cancelled!`);
+      setUndoNumber(null);
+    }
+  };
+
+  const handleCancelUndo = () => {
+    setUndoNumber(null);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center py-8 px-4">
+      {/* 取消號碼確認對話框 */}
+      {undoNumber !== null && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-6 max-w-md w-full">
+            <h2 className="font-display text-2xl font-bold mb-4 flex items-center gap-2">
+              <span>⚠️</span>
+              <span>確認取消號碼？</span>
+            </h2>
+            <p className="font-mono text-base mb-6">
+              您確定要取消號碼 <span className="font-bold text-primary text-xl">{undoNumber}</span> 嗎？
+              <br />
+              <span className="text-sm text-gray-600">此操作將會同步給所有觀眾。</span>
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1 font-mono font-bold border-2 border-black rounded-none"
+                onClick={handleCancelUndo}
+              >
+                算了
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1 font-mono font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all rounded-none"
+                onClick={handleConfirmUndo}
+              >
+                確定取消
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* 頂部狀態欄：計數器、歷史列表、提醒按鈕 */}
       <div className="w-full max-w-6xl mb-6 bg-black text-white p-4 flex flex-col md:flex-row justify-between items-center gap-4 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]">
         {/* 左側：計數器 */}
@@ -164,7 +213,8 @@ export default function Admin() {
           <BingoBoard 
             clickedNumbers={clickedNumbers} 
             isAdmin={true} 
-            onNumberClick={handleNumberClick} 
+            onNumberClick={handleNumberClick}
+            onNumberDoubleClick={handleNumberDoubleClick}
           />
         </div>
       </main>

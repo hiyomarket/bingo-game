@@ -5,9 +5,10 @@ interface BingoBoardProps {
   isAdmin?: boolean;
   clickedNumbers: Set<number>;
   onNumberClick?: (number: number) => void;
+  onNumberDoubleClick?: (number: number) => void;
 }
 
-export function BingoBoard({ isAdmin = false, clickedNumbers, onNumberClick }: BingoBoardProps) {
+export function BingoBoard({ isAdmin = false, clickedNumbers, onNumberClick, onNumberDoubleClick }: BingoBoardProps) {
   const [lastClicked, setLastClicked] = useState<number | null>(null);
 
   // 監聽 clickedNumbers 的變化，找出最新被點擊的號碼
@@ -27,6 +28,12 @@ export function BingoBoard({ isAdmin = false, clickedNumbers, onNumberClick }: B
     }
   };
 
+  const handleNumberDoubleClick = (number: number) => {
+    if (isAdmin && onNumberDoubleClick && clickedNumbers.has(number)) {
+      onNumberDoubleClick(number);
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-3 md:gap-4">
@@ -38,6 +45,7 @@ export function BingoBoard({ isAdmin = false, clickedNumbers, onNumberClick }: B
             <div
               key={number}
               onClick={() => handleNumberClick(number)}
+              onDoubleClick={() => handleNumberDoubleClick(number)}
               className={cn(
                 "aspect-square flex items-center justify-center text-lg sm:text-xl md:text-2xl font-mono font-bold border-2 border-border transition-all duration-200 select-none",
                 isAdmin ? "cursor-pointer hover:bg-gray-100 active:translate-y-1 active:shadow-none" : "cursor-default",
