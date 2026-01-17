@@ -1,4 +1,5 @@
 import { BingoBoard } from "@/components/BingoBoard";
+import FloatingActionButton from "@/components/FloatingActionButton";
 import { useSocket } from "@/contexts/SocketContext";
 import { useEffect, useState } from "react";
 
@@ -79,80 +80,20 @@ export default function Home() {
           <BingoBoard clickedNumbers={clickedNumbers} isAdmin={false} />
         </div>
 
-        {/* 狀態回報按鈕 */}
-        <div className="w-full max-w-4xl mt-8">
-          <div className="bg-secondary border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <h2 className="font-display text-2xl mb-4 uppercase text-center">狀態回報</h2>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-              <button
-                onClick={() => {
-                  setSelectedStatus('差1個');
-                  emitReportState('差1個');
-                }}
-                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差1個'
-                    ? 'bg-yellow-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
-                    : 'bg-white text-black hover:bg-yellow-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                🎯 我聽牌了！<br />(只差 1 個)
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedStatus('差3個');
-                  emitReportState('差3個');
-                }}
-                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差3個'
-                    ? 'bg-blue-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
-                    : 'bg-white text-black hover:bg-blue-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                📊 我差 3 個
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedStatus('差5個');
-                  emitReportState('差5個');
-                }}
-                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差5個'
-                    ? 'bg-green-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
-                    : 'bg-white text-black hover:bg-green-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                📈 我差 5 個
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedStatus('差8個');
-                  emitReportState('差8個');
-                }}
-                className={`px-4 py-3 font-mono font-bold border-2 border-black transition-all ${
-                  selectedStatus === '差8個'
-                    ? 'bg-purple-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] scale-95'
-                    : 'bg-white text-black hover:bg-purple-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
-                }`}
-              >
-                📉 我差 8 個
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedStatus(null);
-                  emitReportState(null);
-                }}
-                className="px-4 py-3 font-mono font-bold border-2 border-black bg-red-500 text-white hover:bg-red-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
-              >
-                ❌ 取消回報
-              </button>
-            </div>
-          </div>
-        </div>
+
       </main>
 
       <footer className="mt-12 text-center font-mono text-sm opacity-60">
         <p>BINGO GAME SYSTEM // MANUS AI</p>
       </footer>
+
+      {/* 浮動回報按鈕 */}
+      <FloatingActionButton 
+        onReportState={(status) => {
+          setSelectedStatus(status);
+          emitReportState(status);
+        }}
+      />
     </div>
   );
 }
