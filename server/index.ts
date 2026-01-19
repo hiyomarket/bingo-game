@@ -21,23 +21,25 @@ async function startServer() {
 
   // 玩家狀態追蹤（用於聽牌回饋系統）
   interface PlayerState {
-    socketId: string;
-    status: string; // '差1個', '差5個', '差10個', '差15個', 或 null
+    name: string; // 玩家暱稱
+    status: string | null; // '差1個', '差3個', '差5個', '差8個', 或 null
   }
-  const playerStates = new Map<string, string>(); // socketId -> status
+  const playerStates = new Map<string, PlayerState>(); // socketId -> PlayerState
 
-  // 計算統計摘要
+  // 計算統計摘要（包含玩家暱稱列表）
   function calculateStats() {
     const stats = {
-      '差1個': 0,
-      '差3個': 0,
-      '差5個': 0,
-      '差8個': 0
+      '差1個': { count: 0, players: [] as string[] },
+      '差3個': { count: 0, players: [] as string[] },
+      '差5個': { count: 0, players: [] as string[] },
+      '差8個': { count: 0, players: [] as string[] }
     };
     
-    playerStates.forEach((status) => {
-      if (status in stats) {
-        stats[status as keyof typeof stats]++;
+    playerStates.forEach((playerState) => {
+      if (playerState.status && playerState.status in stats) {
+        const statusKey = playerState.status as keyof typeof stats;
+        stats[statusKey].count++;
+        stats[statusKey].players.push(playerState.name);
       }
     });
     
@@ -108,15 +110,36 @@ async function startServer() {
       io.emit('bingo-check-alert');
     });
 
+    // 監聽玩家註冊事件
+    socket.on('register-player', (data: { name: string }) => {
+      console.log(`[Socket.IO] Player registered: ${data.name} (${socket.id})`);
+      // 如果玩家已存在，更新暱稱；否則建立新記錄
+      const existingState = playerStates.get(socket.id);
+      if (existingState) {
+        existingState.name = data.name;
+      } else {
+        playerStates.set(socket.id, {
+          name: data.name,
+          status: null
+        });
+      }
+      // 廣播更新後的統計
+      broadcastPlayerStats();
+    });
+
     // 監聽玩家狀態回報
     socket.on('report-state', (status: string | null) => {
       console.log(`[Socket.IO] Player ${socket.id} reported state: ${status}`);
-      if (status === null) {
-        // 取消回報
-        playerStates.delete(socket.id);
+      const playerState = playerStates.get(socket.id);
+      if (playerState) {
+        // 更新現有玩家的狀態
+        playerState.status = status;
       } else {
-        // 更新狀態
-        playerStates.set(socket.id, status);
+        // 如果玩家還沒註冊，建立一個預設記錄
+        playerStates.set(socket.id, {
+          name: 'Unknown Player',
+          status: status
+        });
       }
       // 廣播更新後的統計給管理者
       broadcastPlayerStats();

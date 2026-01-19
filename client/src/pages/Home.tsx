@@ -1,12 +1,45 @@
 import { BingoBoard } from "@/components/BingoBoard";
 import FloatingActionButton from "@/components/FloatingActionButton";
+import NicknameModal from "@/components/NicknameModal";
 import { useSocket } from "@/contexts/SocketContext";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { clickedNumbers, isConnected, onlineUsers, selectedCount, showReminder, emitReportState } = useSocket();
+  const { clickedNumbers, isConnected, onlineUsers, selectedCount, showReminder, emitReportState, emitRegisterPlayer } = useSocket();
   const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
+
+  // 檢查 localStorage 是否有暱稱
+  useEffect(() => {
+    const savedNickname = localStorage.getItem('bingo_player_name');
+    if (!savedNickname) {
+      setShowNicknameModal(true);
+    } else {
+      // 如果已有暱稱，且已連線，則註冊
+      if (isConnected) {
+        emitRegisterPlayer(savedNickname);
+      }
+    }
+  }, []);
+
+  // 當連線狀態變化時，如果已有暱稱則註冊
+  useEffect(() => {
+    if (isConnected) {
+      const savedNickname = localStorage.getItem('bingo_player_name');
+      if (savedNickname) {
+        emitRegisterPlayer(savedNickname);
+      }
+    }
+  }, [isConnected]);
+
+  const handleNicknameSubmit = (nickname: string) => {
+    setShowNicknameModal(false);
+    // 如果已連線，則立即註冊
+    if (isConnected) {
+      emitRegisterPlayer(nickname);
+    }
+  };
 
   useEffect(() => {
     if (clickedNumbers.size > 0) {
@@ -94,6 +127,11 @@ export default function Home() {
           emitReportState(status);
         }}
       />
+
+      {/* 暱稱輸入對話框 */}
+      {showNicknameModal && (
+        <NicknameModal onSubmit={handleNicknameSubmit} />
+      )}
     </div>
   );
 }

@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+interface PlayerStatusDetail {
+  count: number;
+  players: string[];
+}
+
 interface PlayerStats {
-  '差1個': number;
-  '差3個': number;
-  '差5個': number;
-  '差8個': number;
+  '差1個': PlayerStatusDetail;
+  '差3個': PlayerStatusDetail;
+  '差5個': PlayerStatusDetail;
+  '差8個': PlayerStatusDetail;
 }
 
 interface SocketContextType {
@@ -21,6 +26,7 @@ interface SocketContextType {
   emitRemindCheck: () => void; // 提醒聽牌
   emitReportState: (status: string | null) => void; // 回報狀態
   emitUndoNumber: (number: number) => void; // 取消號碼
+  emitRegisterPlayer: (nickname: string) => void; // 註冊玩家暱稱
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -34,10 +40,10 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
   const [selectedCount, setSelectedCount] = useState(0);
   const [showReminder, setShowReminder] = useState(false); // 提醒狀態
   const [playerStats, setPlayerStats] = useState<PlayerStats>({
-    '差1個': 0,
-    '差3個': 0,
-    '差5個': 0,
-    '差8個': 0
+    '差1個': { count: 0, players: [] },
+    '差3個': { count: 0, players: [] },
+    '差5個': { count: 0, players: [] },
+    '差8個': { count: 0, players: [] }
   });
 
   useEffect(() => {
@@ -152,8 +158,15 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const emitRegisterPlayer = (nickname: string) => {
+    if (socket) {
+      console.log('[Socket.IO] Registering player with nickname:', nickname);
+      socket.emit('register-player', { name: nickname });
+    }
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState, emitUndoNumber }}>
+    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState, emitUndoNumber, emitRegisterPlayer }}>
       {children}
     </SocketContext.Provider>
   );

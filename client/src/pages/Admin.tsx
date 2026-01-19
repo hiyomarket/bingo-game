@@ -124,21 +124,52 @@ export default function Admin() {
           <span>現場戰況</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {/* 聽牌 (diff1個) */}
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
-            <div className="font-mono text-sm text-white/80">聽牌 (差1個)</div>
-            <div className="font-display text-3xl font-bold text-yellow-300">{playerStats['差1個']} 人</div>
+            <div className="font-mono text-sm text-white/80">聽牌 (diff1個)</div>
+            <div className="font-display text-3xl font-bold text-yellow-300">{playerStats['差1個'].count} 人</div>
+            {playerStats['差1個'].players.length > 0 && (
+              <div className="mt-2 font-mono text-xs text-white/70 max-h-20 overflow-y-auto">
+                {playerStats['差1個'].players.slice(0, 5).join(', ')}
+                {playerStats['差1個'].players.length > 5 && ` ...等${playerStats['差1個'].players.length}人`}
+              </div>
+            )}
           </div>
+          
+          {/* 差 3 個號碼 */}
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
             <div className="font-mono text-sm text-white/80">差 3 個號碼</div>
-            <div className="font-display text-3xl font-bold text-blue-300">{playerStats['差3個']} 人</div>
+            <div className="font-display text-3xl font-bold text-blue-300">{playerStats['差3個'].count} 人</div>
+            {playerStats['差3個'].players.length > 0 && (
+              <div className="mt-2 font-mono text-xs text-white/70 max-h-20 overflow-y-auto">
+                {playerStats['差3個'].players.slice(0, 5).join(', ')}
+                {playerStats['差3個'].players.length > 5 && ` ...等${playerStats['差3個'].players.length}人`}
+              </div>
+            )}
           </div>
+          
+          {/* 差 5 個號碼 */}
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
             <div className="font-mono text-sm text-white/80">差 5 個號碼</div>
-            <div className="font-display text-3xl font-bold text-green-300">{playerStats['差5個']} 人</div>
+            <div className="font-display text-3xl font-bold text-green-300">{playerStats['差5個'].count} 人</div>
+            {playerStats['差5個'].players.length > 0 && (
+              <div className="mt-2 font-mono text-xs text-white/70 max-h-20 overflow-y-auto">
+                {playerStats['差5個'].players.slice(0, 5).join(', ')}
+                {playerStats['差5個'].players.length > 5 && ` ...等${playerStats['差5個'].players.length}人`}
+              </div>
+            )}
           </div>
+          
+          {/* 差 8 個號碼 */}
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded border-2 border-white/30">
             <div className="font-mono text-sm text-white/80">差 8 個號碼</div>
-            <div className="font-display text-3xl font-bold text-purple-300">{playerStats['差8個']} 人</div>
+            <div className="font-display text-3xl font-bold text-purple-300">{playerStats['差8個'].count} 人</div>
+            {playerStats['差8個'].players.length > 0 && (
+              <div className="mt-2 font-mono text-xs text-white/70 max-h-20 overflow-y-auto">
+                {playerStats['差8個'].players.slice(0, 5).join(', ')}
+                {playerStats['差8個'].players.length > 5 && ` ...等${playerStats['差8個'].players.length}人`}
+              </div>
+            )}
           </div>
         </div>
       </div>
