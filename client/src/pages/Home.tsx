@@ -1,11 +1,12 @@
 import { BingoBoard } from "@/components/BingoBoard";
 import FloatingActionButton from "@/components/FloatingActionButton";
+import ImmersiveNotificationModal from "@/components/ImmersiveNotificationModal";
 import NicknameModal from "@/components/NicknameModal";
 import { useSocket } from "@/contexts/SocketContext";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const { clickedNumbers, isConnected, onlineUsers, selectedCount, showReminder, emitReportState, emitRegisterPlayer } = useSocket();
+  const { clickedNumbers, isConnected, onlineUsers, selectedCount, showReminder, immersiveNotification, emitReportState, emitRegisterPlayer, clearImmersiveNotification } = useSocket();
   const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [showNicknameModal, setShowNicknameModal] = useState(false);
@@ -132,6 +133,12 @@ export default function Home() {
       {showNicknameModal && (
         <NicknameModal onSubmit={handleNicknameSubmit} />
       )}
+
+      {/* 沉浸式通知 Modal */}
+      <ImmersiveNotificationModal 
+        data={immersiveNotification}
+        onClose={clearImmersiveNotification}
+      />
     </div>
   );
 }

@@ -89,6 +89,45 @@ async function startServer() {
         });
         // 更新統計資訊
         broadcastStats();
+
+        // 檢查是否觸發里程碑通知
+        const ballCount = clickedNumbers.size;
+        let notificationData = null;
+
+        if (ballCount === 45) {
+          notificationData = { 
+            type: 'milestone', 
+            title: '遊戲過半', 
+            message: '已開出 45 球，請把握機會！', 
+            current_ball_count: ballCount 
+          };
+        } else if (ballCount === 55) {
+          notificationData = { 
+            type: 'milestone', 
+            title: '緊張時刻', 
+            message: '剩下最後 20 顆球！', 
+            current_ball_count: ballCount 
+          };
+        } else if (ballCount === 65) {
+          notificationData = { 
+            type: 'milestone', 
+            title: '最後階段', 
+            message: '剩下最後 10 顆球，快檢查你的牌！', 
+            current_ball_count: ballCount 
+          };
+        } else if (ballCount === 70) {
+          notificationData = { 
+            type: 'milestone', 
+            title: '決勝時刻！', 
+            message: '剩下最後 5 顆球！成敗在此一舉！', 
+            current_ball_count: ballCount 
+          };
+        }
+
+        if (notificationData) {
+          console.log(`[Socket.IO] Milestone reached: ${ballCount} balls`);
+          io.emit('show-immersive-notification', notificationData);
+        }
       }
     });
 
@@ -106,7 +145,14 @@ async function startServer() {
     // 監聽提醒聽牌事件
     socket.on('remind-check', () => {
       console.log('[Socket.IO] Remind check triggered by admin');
-      // 廣播給所有用戶
+      // 廣播沉浸式通知給所有用戶
+      io.emit('show-immersive-notification', {
+        type: 'manual_reminder',
+        title: '主持人提醒 🔔',
+        message: '請檢查您的賓果卡，看看是否已經聽牌了！',
+        current_ball_count: clickedNumbers.size
+      });
+      // 保留舊的事件以兼容舊版本
       io.emit('bingo-check-alert');
     });
 

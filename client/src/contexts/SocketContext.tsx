@@ -13,6 +13,13 @@ interface PlayerStats {
   '差8個': PlayerStatusDetail;
 }
 
+interface ImmersiveNotificationData {
+  type: 'manual_reminder' | 'milestone';
+  title: string;
+  message: string;
+  current_ball_count: number;
+}
+
 interface SocketContextType {
   socket: Socket | null;
   clickedNumbers: Set<number>;
@@ -22,11 +29,13 @@ interface SocketContextType {
   selectedCount: number;
   showReminder: boolean; // 是否顯示提醒
   playerStats: PlayerStats; // 玩家狀態統計
+  immersiveNotification: ImmersiveNotificationData | null; // 沉浸式通知數據
   emitNumberClick: (number: number) => void;
   emitRemindCheck: () => void; // 提醒聽牌
   emitReportState: (status: string | null) => void; // 回報狀態
   emitUndoNumber: (number: number) => void; // 取消號碼
   emitRegisterPlayer: (nickname: string) => void; // 註冊玩家暱稱
+  clearImmersiveNotification: () => void; // 清除沉浸式通知
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -45,6 +54,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     '差5個': { count: 0, players: [] },
     '差8個': { count: 0, players: [] }
   });
+  const [immersiveNotification, setImmersiveNotification] = useState<ImmersiveNotificationData | null>(null);
 
   useEffect(() => {
     // Socket.IO 客戶端配置
@@ -127,6 +137,12 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
       setPlayerStats(stats);
     });
 
+    // 監聽沉浸式通知事件
+    newSocket.on('show-immersive-notification', (data: ImmersiveNotificationData) => {
+      console.log('[Socket.IO] Immersive notification received:', data);
+      setImmersiveNotification(data);
+    });
+
     setSocket(newSocket);
 
     return () => {
@@ -165,8 +181,12 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const clearImmersiveNotification = () => {
+    setImmersiveNotification(null);
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, emitNumberClick, emitRemindCheck, emitReportState, emitUndoNumber, emitRegisterPlayer }}>
+    <SocketContext.Provider value={{ socket, clickedNumbers, history, isConnected, onlineUsers, selectedCount, showReminder, playerStats, immersiveNotification, emitNumberClick, emitRemindCheck, emitReportState, emitUndoNumber, emitRegisterPlayer, clearImmersiveNotification }}>
       {children}
     </SocketContext.Provider>
   );
